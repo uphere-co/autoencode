@@ -73,7 +73,7 @@ data ChunkTag = NP        -- ^ noun phrase
               | RRC       -- ^ reduced relative clause
               | UCP       -- ^ unlike coordnated phrase
               | WHADJP    -- ^ wh-adjective phrase
-              | WHAVP     -- ^ wh-adverb phrase
+              | WHADVP    -- ^ wh-adverb phrase
               | WHNP      -- ^ wh-noun phrase
               | WHPP      -- ^ wh-prepositional phrase
               | X         -- ^ unknown
