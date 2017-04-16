@@ -4,6 +4,7 @@ import           Control.Applicative         ((*>),many)
 import qualified Data.Attoparsec.Text as A
 import           Data.Either                 (rights)
 import           Data.Foldable
+import           Data.List                   (transpose)
 import           Data.List.Split             (splitWhen)
 import           Data.Monoid
 import qualified Data.Text            as T
@@ -17,9 +18,12 @@ import NLP.SyntaxTree.Parser
 --
 import Debug.Trace
 
-format xs = T.pack (concatMap (\x -> printf "%20s " (T.unpack x)) xs)
+format n xs = let fstr = "%" ++ show n ++ "s "
+              in T.pack (concatMap (\x -> printf fstr (T.unpack x)) xs)
 
 penntreefile = many (A.skipSpace *> penntree)
+
+-- transpose = sequenceA
 
 combine xss y = 
   let lx = length xss
@@ -47,16 +51,21 @@ parsePennTree fp = do
 --   let fp = "WSJ_2320.MRG"
 
 data Config = Config { propfile :: FilePath
-                     , pennfile :: FilePath }
+                     , pennfile :: FilePath
+                     , istrans :: Bool
+                     }
   
 config :: O.Parser Config
 config = Config <$> O.strOption (O.long "prop" <> O.short 'p' <> O.help "PropBank file")
                 <*> O.strOption (O.long "penn" <> O.short 'n' <> O.help "Penn Treebank file")
+                <*> O.switch (O.long "transpose" <> O.short 't' <> O.help "Transpose format")
 
 main = do
   c <- O.execParser (O.info config O.fullDesc)
   xsss <- parseCoNLL (propfile c)
   ys <- parsePennTree (pennfile c)
-  mapM_ (\ts -> mapM_ (TIO.putStrLn . format) ts >> putStrLn "=================") (rights (zipWith combine xsss ys))
-
-
+  let results = rights (zipWith combine xsss ys)
+  if istrans c
+    then mapM_ (\ts -> mapM_ (TIO.putStrLn . format 14) (transpose ts) >> putStrLn (replicate 80 '=')) results
+    else mapM_ (\ts -> mapM_ (TIO.putStrLn . format 20) ts >> putStrLn (replicate 80 '=')) results
+  
