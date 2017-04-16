@@ -8,11 +8,17 @@ $ cabal install
 where `(uphere-nix-overlay)` and `(symbolic)` are the directories where the corresponding repo is
 located.
 
-for using propbank
+To use propbank
 ```
 $ cabal exec -- runhaskell propbank/propbank.hs -n (penntreebank file) -p (propbank file)
 ```
 We have additional `-t` option for showing results in transposed format.
+
+To use frame
+```
+$ runhakell frame/frame.hs -f (frame xml file)
+```
+
 
 * Brief summary of source files
  - exe/acctest.hs
