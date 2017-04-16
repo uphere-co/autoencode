@@ -62,7 +62,8 @@ data ChunkTag = NP        -- ^ noun phrase
               | SBAR      -- ^ subordinating conjunction
               | PRT       -- ^ particle 
               | INTJ      -- ^ interjection
-              | PNP       -- ^ prepositional noun phrase 
+              | PNP       -- ^ prepositional noun phrase
+              | S         -- ^ sentence
               deriving (Show,Eq,Ord,Enum)
 
 data IOBPrefix = I_       -- ^ inside the chunk 
@@ -135,5 +136,16 @@ identifyPOS t
           | p == "''"   -> M_DQUOTE
           | otherwise   -> error ("invalid tag: " ++ T.unpack t)
 
- 
-            
+identifyChunk :: Text -> ChunkTag
+identifyChunk t =
+    let p = T.takeWhile (/= '-') t
+    in if | p == "NP"   -> NP
+          | p == "PP"   -> PP
+          | p == "ADVP" -> ADVP
+          | p == "ADJP" -> ADJP
+          | p == "SBAR" -> SBAR
+          | p == "PRT"  -> PRT
+          | p == "INTJ" -> INTJ
+          | p == "PNP"  -> PNP
+          | p == "S"    -> S
+          | otherwise   -> error ("no such chunk tag : " ++ T.unpack t)
