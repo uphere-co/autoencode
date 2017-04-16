@@ -1,7 +1,11 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE MultiWayIf #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module NLP.SyntaxTree.Type.PennTreebankII where
 
+import Data.Text                (Text)
+import qualified Data.Text as T  
 
 -- based on http://www.clips.ua.ac.be/pages/mbsp-tags
 
@@ -82,8 +86,54 @@ data AnchorTag = A1       -- ^ anchor chunks that corresponds to P1
                deriving (Show,Eq,Ord,Enum)
 
 
-
-
+identifyPOS :: Text -> POSTag
+identifyPOS t
+  | t == "-LRB-"  = D_LRB
+  | t == "-RRB-"  = D_RRB
+  | t == "-NONE-" = D_NONE
+  | otherwise =
+    let p = T.takeWhile (/= '-') t
+    in if | p == "CC"   -> CC
+          | p == "CD"   -> CD
+          | p == "DT"   -> DT
+          | p == "EX"   -> EX
+          | p == "FW"   -> FW
+          | p == "IN"   -> IN
+          | p == "JJ"   -> JJ
+          | p == "JJR"  -> JJR
+          | p == "JJS"  -> JJS
+          | p == "LS"   -> LS 
+          | p == "MD"   -> MD
+          | p == "NN"   -> NN 
+          | p == "NNS"  -> NNS 
+          | p == "NNP"  -> NNP
+          | p == "NNPS" -> NNPS
+          | p == "PDT"  -> PDT
+          | p == "POS"  -> POS
+          | p == "PRP"  -> PRP
+          | p == "PRP$" -> PRPDollar 
+          | p == "RB"   -> RB
+          | p == "RBR"  -> RBR
+          | p == "RBS"  -> RBS
+          | p == "RP"   -> RP
+          | p == "SYM"  -> SYM
+          | p == "TO"   -> TO     
+          | p == "UH"   -> UH     
+          | p == "VB"   -> VB     
+          | p == "VBZ"  -> VBZ    
+          | p == "VBP"  -> VBP     
+          | p == "VBD"  -> VBD    
+          | p == "VBN"  -> VBN    
+          | p == "VBG"  -> VBG    
+          | p == "WDT"  -> WDT    
+          | p == "WP"   -> WP     
+          | p == "WP$"  -> WPDollar
+          | p == "WRB"  -> WRB 
+          | p == "."    -> M_PERIOD
+          | p == ","    -> M_COMMA 
+          | p == ":"    -> M_COLON 
+          | p == "''"   -> M_DQUOTE
+          | otherwise   -> error ("invalid tag: " ++ T.unpack t)
 
  
             
