@@ -162,9 +162,23 @@ identifyChunk t =
           | p == "VP"   -> VP
           | p == "ADVP" -> ADVP
           | p == "ADJP" -> ADJP
-          | p == "SBAR" -> SBAR
           | p == "PRT"  -> PRT
           | p == "INTJ" -> INTJ
           | p == "PNP"  -> PNP
+          | p == "CONJP"-> CONJP  
+          | p == "FRAG" -> FRAG 
+          | p == "LST"  -> LST 
+          | p == "NAC"  -> NAC
+          | p == "NX"   -> NX  
+          | p == "PRN"  -> PRN 
+          | p == "QP"   -> QP  
+          | p == "RRC"  -> RRC 
+          | p == "UCP"  -> UCP 
+          | p == "WHADJP" -> WHADJP
+          | p == "WHADVP" -> WHADVP
+          | p == "WHNP" -> WHNP
+          | p == "WHPP" -> WHPP
+          | p == "X"    -> X    
           | p == "S"    -> S
+          | p == "SBAR" -> SBAR
           | otherwise   -> error ("no such chunk tag : " ++ T.unpack t)
