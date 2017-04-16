@@ -8,7 +8,7 @@ import           Data.Text                 (Text)
 import qualified Data.Text.IO      as TIO
 import qualified Data.Text.Lazy    as TL
 import qualified Data.Text.Lazy.IO as TLIO
--- import qualified Text.Taggy as 
+import qualified Options.Applicative as O
 import qualified Text.Taggy.Lens as X
 
 
@@ -21,10 +21,15 @@ makeLenses ''Role
 
 emptyRole = Role "" "" ""
 
+data Config = Config { framefile :: FilePath }
+
+config :: O.Parser Config
+config = Config <$> O.strOption (O.long "frame" <> O.short 'f' <> O.help "frame xml file")
+
 main = do
-  -- putStrLn "frame parsing"
-  let fp = "take.xml"
-  txt <- TLIO.readFile fp
+  c <- O.execParser (O.info config O.fullDesc)
+  -- let fp = "take.xml"
+  txt <- TLIO.readFile (framefile c)
   let me = txt ^? X.html . X.allNamed (only "frameset") . X.allNamed (only "predicate")
   case me of
     Nothing -> error "parsing error"
