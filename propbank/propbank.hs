@@ -1,9 +1,13 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import           Control.Applicative ( (*>),many)
 import          Data.Traversable (sequenceA)
 import           Data.List.Split     (splitWhen)
 import qualified Data.Text    as T
 import qualified Data.Text.IO as TIO
 --
+import NLP.SyntaxTree.Type
+import NLP.SyntaxTree.Type.PennTreebankII
 import NLP.SyntaxTree.Parser
 import qualified Data.Attoparsec.Text as A
 
@@ -21,6 +25,14 @@ task1 = do
 
 penntreefile = many (A.skipSpace *> penntree)
 
+inNone (PL D_NONE _) = True
+isNone _             = False
+
+pruneOutNone :: PennTreeGen ChunkTag POSTag -> PennTreeGen ChunkTag POSTag
+pruneOutNone (PN t xs) = let xs' = (filter (not . isNone) . map pruneOutNone) xs
+                         in if null xs' then PL D_NONE "" else PN t xs' 
+pruneOutNone x = x 
+
 task2 = do
   let fp = "WSJ_2320.MRG"
   txt <- TIO.readFile fp
@@ -29,8 +41,8 @@ task2 = do
     Right rs -> do
       
       flip mapM_ rs $ \r -> do
-        print r
-        print (xformPennTree r)
+        let r' = (pruneOutNone . xformPennTree) r
+        print r'
       print (length rs)
 
 main = task1 >> task2
