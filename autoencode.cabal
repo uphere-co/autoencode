@@ -60,6 +60,7 @@ Library
                         NLP.SyntaxTree.Printer
                         NLP.SyntaxTree.Regularize
                         NLP.SyntaxTree.Type
+                        NLP.SyntaxTree.Type.PennTreebankII
                         NLP.Types
                         NLP.WordVector.Parser
                         NLP.WordVector.Vectorize

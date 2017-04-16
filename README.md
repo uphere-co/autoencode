@@ -1,6 +1,11 @@
+To build
 
-[ JH : For me as a Haskell beginner, it took some time to understand how these codes are organized and pipelined in runtime.
-So here I leave what I figured out so far. ]
+```
+$ nix-shell shell.nix --argstr uphere-nix-overlay (uphere-nix-overlay) --argstr symbolic (symbolic)
+$ cabal build
+```
+where `(uphere-nix-overlay)` and `(symbolic)` are the directories where the corresponding repo is
+located.
 
 * Brief summary of source files
  - exe/acctest.hs
