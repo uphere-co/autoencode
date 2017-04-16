@@ -16,4 +16,13 @@ main = do
   case me of
     Nothing -> error "parsing error"
     Just e -> do
-      print $ (e ^. X.attrs . ix "lemma")
+      let n = e ^. X.attrs . ix "lemma"
+          rs = e ^.. X.allNamed (only "roleset")
+      print n
+          
+      flip mapM_ rs $ \r -> do
+        case r ^? X.allNamed (only "roles") of
+          Nothing -> return ()
+          Just rrs -> do
+            print (rrs ^.. X.allNamed (only "role"))
+
