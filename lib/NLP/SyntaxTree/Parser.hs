@@ -11,12 +11,12 @@ import           NLP.SyntaxTree.Type.PennTreebankII
 --
 import Debug.Trace
 
-xformPennTree :: PennTreeGen Text Text -> PennTreeGen ChunkTag POSTag
+xformPennTree :: PennTreeGen Text Text Text -> PennTreeGen ChunkTag POSTag Text
 xformPennTree (PN tn xs) = PN (identifyChunk tn) (map xformPennTree xs)
 xformPennTree (PL tl x)  = PL (identifyPOS tl) x
 
 
-penntree :: A.Parser (PennTreeGen Text Text)
+penntree :: A.Parser (PennTreeGen Text Text Text)
 penntree = do
   oparen
   A.skipSpace
@@ -25,7 +25,7 @@ penntree = do
   cparen
   return n
 
-pnode :: A.Parser (PennTreeGen Text Text)
+pnode :: A.Parser (PennTreeGen Text Text Text)
 pnode =
     (do oparen
         t <- tag

@@ -1,8 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import           Control.Applicative ( (*>),many)
-import          Data.Traversable (sequenceA)
+import           Data.Foldable
 import           Data.List.Split     (splitWhen)
+import           Data.Monoid
 import qualified Data.Text    as T
 import qualified Data.Text.IO as TIO
 --
@@ -10,7 +11,8 @@ import NLP.SyntaxTree.Type
 import NLP.SyntaxTree.Type.PennTreebankII
 import NLP.SyntaxTree.Parser
 import qualified Data.Attoparsec.Text as A
-
+--
+import Debug.Trace
 
 task1 = do
   putStrLn "interpreting propbank CoNLL"
@@ -25,12 +27,12 @@ task1 = do
 
 penntreefile = many (A.skipSpace *> penntree)
 
-inNone (PL D_NONE _) = True
+isNone (PL D_NONE _) = True
 isNone _             = False
 
-pruneOutNone :: PennTreeGen ChunkTag POSTag -> PennTreeGen ChunkTag POSTag
+pruneOutNone :: Monoid m => PennTreeGen ChunkTag POSTag m -> PennTreeGen ChunkTag POSTag m
 pruneOutNone (PN t xs) = let xs' = (filter (not . isNone) . map pruneOutNone) xs
-                         in if null xs' then PL D_NONE "" else PN t xs' 
+                         in if null xs' then PL D_NONE mempty else PN t xs' 
 pruneOutNone x = x 
 
 task2 = do
@@ -41,8 +43,11 @@ task2 = do
     Right rs -> do
       
       flip mapM_ rs $ \r -> do
+        print r
         let r' = (pruneOutNone . xformPennTree) r
         print r'
+        TIO.putStrLn (foldMap (<> " ") r')
+        putStrLn "================================="
       print (length rs)
 
 main = task1 >> task2

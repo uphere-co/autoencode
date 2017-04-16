@@ -7,11 +7,13 @@ module NLP.SyntaxTree.Type where
 
 import           Data.Text                   (Text)
 
-data PennTreeGen c p = PN c [PennTreeGen c p]
-                     | PL p Text
-                   deriving Show
-                       
-type PennTree = PennTreeGen Text Text
+data PennTreeGen c p a = PN c [PennTreeGen c p a]
+                       | PL p a
+                   deriving (Show, Functor, Foldable, Traversable)
+
+
+                            
+type PennTree = PennTreeGen Text Text Text
 
 data BinTree a = BinNode (BinTree a) (BinTree a)
                | BinLeaf a
