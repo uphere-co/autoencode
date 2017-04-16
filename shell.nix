@@ -1,10 +1,18 @@
-{ pkgs ? (import <nixpkgs>{}) }:
+{ pkgs ? (import <nixpkgs>{})
+, uphere-nix-overlay
+, symbolic
+}:
 
 with pkgs;
 
-let hsconfig = import ../nix/haskell-modules/configuration-ghc-8.0.x.nix
+let hsconfig = import (uphere-nix-overlay + "/nix/haskell-modules/configuration-ghc-8.0.x.nix")
                  { inherit pkgs; };
-    newhaskellPackages = haskellPackages.override { overrides = hsconfig; };
+    hsconfig2  = self: super: {
+      "symbolic" = self.callPackage (import symbolic) {};
+    };
+    newhaskellPackages = haskellPackages.override {
+      overrides = self: super: hsconfig self super // hsconfig2 self super;
+    };
     
     hsenv = newhaskellPackages.ghcWithPackages (p: with p; [
               cabal-install
@@ -23,12 +31,13 @@ let hsconfig = import ../nix/haskell-modules/configuration-ghc-8.0.x.nix
 	      tasty-hunit
 	      tasty-quickcheck
 	      tasty-smallcheck
-              zenc              
+              zenc
+              p.symbolic
             ]);
 
 in stdenv.mkDerivation {
      name = "ghc-shell";
-     buildInputs = [ hsenv graphviz #llvm_38
+     buildInputs = [ hsenv graphviz 
 		   ];
      shellHook = ''
      '';
