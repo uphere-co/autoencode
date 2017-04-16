@@ -141,6 +141,7 @@ identifyChunk t =
     let p = T.takeWhile (/= '-') t
     in if | p == "NP"   -> NP
           | p == "PP"   -> PP
+          | p == "VP"   -> VP
           | p == "ADVP" -> ADVP
           | p == "ADJP" -> ADJP
           | p == "SBAR" -> SBAR

@@ -10,13 +10,13 @@ import qualified Data.Text as T  (concat,intercalate,replicate,take)
 import NLP.SyntaxTree.Type
 
 textprinter :: Int -> PennTree -> Text
-textprinter n (PT _ lst) = T.intercalate "\n" (map (textprinter (n+4)) lst)
-textprinter n (PN txt) = T.replicate n " " <> txt
+textprinter n (PN _ lst) = T.intercalate "\n" (map (textprinter (n+4)) lst)
+textprinter n (PL _ txt) = T.replicate n " " <> txt
 
 pennTreePrint :: Int -> PennTree -> Text
-pennTreePrint n (PT t lst) = "\n" <> fmttag <> T.concat (map (pennTreePrint (n+2)) lst)
+pennTreePrint n (PN t lst) = "\n" <> fmttag <> T.concat (map (pennTreePrint (n+2)) lst)
   where fmttag = T.replicate n " " <> T.take 4 (t <> "    ") <> " "
-pennTreePrint _ (PN txt) = txt
+pennTreePrint _ (PL t txt) = T.take 4 (t <> "    ") <> " " <> txt
 
 btreePrint :: [Bool] -> (a -> Text) -> BinTree a -> Text
 btreePrint _  s (BinLeaf txt) = s txt
