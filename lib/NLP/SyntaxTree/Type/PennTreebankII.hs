@@ -8,6 +8,7 @@ import Data.Text                (Text)
 import qualified Data.Text as T  
 
 -- based on http://www.clips.ua.ac.be/pages/mbsp-tags
+-- also http://www.surdeanu.info/mihai/teaching/ista555-fall13/readings/PennTreebankConstituents.html
 
 data POSTag = CC          -- ^ conjunction, coordinating
             | CD          -- ^ cardinal number
@@ -59,11 +60,28 @@ data ChunkTag = NP        -- ^ noun phrase
               | VP        -- ^ verb phrase
               | ADVP      -- ^ adverb phrase
               | ADJP      -- ^ adjective phrase
-              | SBAR      -- ^ subordinating conjunction
               | PRT       -- ^ particle 
               | INTJ      -- ^ interjection
               | PNP       -- ^ prepositional noun phrase
+              | CONJP     -- ^ conjunction phrase
+              | FRAG      -- ^ fragment
+              | LST       -- ^ list marker
+              | NAC       -- ^ not a constituent
+              | NX        -- ^ mark the head of the NP
+              | PRN       -- ^ parenthetical
+              | QP        -- ^ quantifier phrase
+              | RRC       -- ^ reduced relative clause
+              | UCP       -- ^ unlike coordnated phrase
+              | WHADJP    -- ^ wh-adjective phrase
+              | WHAVP     -- ^ wh-adverb phrase
+              | WHNP      -- ^ wh-noun phrase
+              | WHPP      -- ^ wh-prepositional phrase
+              | X         -- ^ unknown
               | S         -- ^ sentence
+              | SBAR      -- ^ subordinating conjunction
+              | SBARQ     -- ^ direct question introduced by a wh-word or wh-phrase
+              | SINV      -- ^ inverted declarative sentence
+              | SQ        -- ^ inverted yes/no question
               deriving (Show,Eq,Ord,Enum)
 
 data IOBPrefix = I_       -- ^ inside the chunk 
