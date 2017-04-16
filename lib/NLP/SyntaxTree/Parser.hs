@@ -39,6 +39,7 @@ pnode =
         t <- tag
         A.skipSpace
         c <- (A.takeWhile1 (A.notInClass " ()"))
+        A.skipWhile (/= ')')
         cparen
         return (PL t c))
 
