@@ -33,14 +33,15 @@ config = Config <$> O.strOption (O.long "dir" <> O.short 'd' <> O.help "frame xm
 main :: IO ()
 main = do
   c <- O.execParser (O.info config O.fullDesc)
-  -- let fp = "take.xml"
   let dir = framedir c 
   filelst <- map (dir </>) . sort . filter (\x -> takeExtension x == ".xml") <$> getDirectoryContents dir
   
-  withFile (outputfile c) WriteMode $ \h ->
-    mapM_ (process h) filelst 
+  withFile (outputfile c) WriteMode $ \h -> do
+    lst <- mapM (process h) filelst
+    BL.hPutStr h (encode lst)
+    
 
-process :: Handle -> FilePath -> IO ()
+process :: Handle -> FilePath -> IO (Text,[(Text,[Role])]) 
 process h fp = do
   putStrLn fp
   txt <- TLIO.readFile fp
@@ -57,15 +58,13 @@ process h fp = do
                      roles' = flip map (roles ^.. X.allNamed (only "role") . X.attrs) $ \r ->
                                 emptyRole &~ do description .= (r ^. ix "descr")
                                                 function    .= identifyFuncTag (r ^. ix "f")
-                                                number      .= read (T.unpack (r ^. ix "n"))
+                                                number      .= identifyRoleNumber (r ^. ix "n")
                  in (rolesetid,roles')
-      BL.hPutStr h (encode (n,rs))
-      -- TIO.putStrLn ("lemma: " <> n)
-      -- print (rolesetid,roles')
+      return (n,rs)
 
-{-  
-main = do
+
+main' = do
   lbstr <- BL.readFile "test.bin"
-  let rs = decode lbstr :: (Text,[(Text,[Role])])
-  print rs
--}
+  let rs = decode lbstr :: [(Text,[(Text,[Role])])]
+  mapM_ print rs
+

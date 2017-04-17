@@ -16,7 +16,7 @@ We have additional `-t` option for showing results in transposed format.
 
 To use frame
 ```
-$ runhakell frame/frame.hs -f (frame xml file)
+$ cabal exec -- runhakell frame/frame.hs -d (frame xml dir) -o (output binary file)
 ```
 
 
