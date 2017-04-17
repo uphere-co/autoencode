@@ -14,8 +14,8 @@ testbtree :: BinTree Text
 testbtree = BinNode (BinNode (BinLeaf "a") (BinLeaf "b")) (BinLeaf "c")
 
 binarizeR :: PennTree -> BinTree Text
-binarizeR (PN t)    = BinLeaf t
-binarizeR (PT _ ys) = go ys
+binarizeR (PL _ t)    = BinLeaf t
+binarizeR (PN _ ys) = go ys
  where
    go []       = error "impossible"
    go (x:[])   = binarizeR x 

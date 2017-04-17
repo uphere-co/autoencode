@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module NLP.SyntaxTree.Parser where
 
 import           Data.Text                   (Text)
@@ -5,19 +7,41 @@ import           Control.Applicative
 import qualified Data.Attoparsec.Text as A
 --
 import           NLP.SyntaxTree.Type
+import           NLP.SyntaxTree.Type.PennTreebankII
+--
+import Debug.Trace
 
-penntree :: A.Parser PennTree
-penntree =
+xformPennTree :: PennTreeGen Text Text -> PennTreeGen ChunkTag POSTag
+xformPennTree (PN tn xs) = PN (identifyChunk tn) (map xformPennTree xs)
+xformPennTree (PL tl x)  = PL (identifyPOS tl) x
+
+
+penntree :: A.Parser (PennTreeGen Text Text)
+penntree = do
+  oparen
+  A.skipSpace
+  n <- pnode
+  A.skipSpace
+  cparen
+  return n
+
+pnode :: A.Parser (PennTreeGen Text Text)
+pnode =
     (do oparen
         t <- tag
         A.skipSpace
-        s <- A.many1 (penntree <* A.skipSpace)
+        s <- A.many1 (pnode <* A.skipSpace)
         A.skipWhile (/= ')')
         cparen 
-        return (PT t s))
+        return (PN t s))
     <|> 
-    (do s <- A.takeWhile1 (not . (`elem` ['(',')']))
-        return (PN s))
+    (do oparen
+        t <- tag
+        A.skipSpace
+        c <- (A.takeWhile1 (A.notInClass " ()"))
+        cparen
+        return (PL t c))
+
 
 oparen :: A.Parser Char
 oparen = A.char '('
