@@ -36,6 +36,7 @@ Library
                         --
                         attoparsec,
                         bifunctors,
+                        binary,
                         bytestring,
                         conduit,
                         conduit-extra,

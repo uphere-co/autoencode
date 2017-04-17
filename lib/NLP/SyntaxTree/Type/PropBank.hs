@@ -1,6 +1,7 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module NLP.SyntaxTree.Type.PropBank where
@@ -39,15 +40,23 @@ data FunctionTag = EXT  -- ^ extent
                  | LVB  -- ^ light verb (for nouns only)
                  deriving (Show, Read, Eq, Ord, Enum)
 
-
+instance Binary FunctionTag where
+  put = putWord8 . fromIntegral . fromEnum
+  get = (toEnum . fromIntegral) <$> getWord8 
+  
 identifyFuncTag :: Text -> FunctionTag
 identifyFuncTag t = read (T.unpack (T.toUpper t))
 
- 
 data Role = Role { _role_description :: Text
                  , _role_function :: FunctionTag
                  , _role_number :: Int }
           deriving Show
+
+instance Binary Role where
+  put Role {..} =
+    put _role_description >> put _role_function >> put _role_number
+  get = do
+    Role <$> get <*> get <*> get
 
 makeLensesWith underscoreFields ''Role
 
