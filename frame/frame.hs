@@ -5,21 +5,16 @@
 import           Control.Lens
 import           Data.Monoid
 import           Data.Text                 (Text)
+import qualified Data.Text         as T
 import qualified Data.Text.IO      as TIO
 import qualified Data.Text.Lazy    as TL
 import qualified Data.Text.Lazy.IO as TLIO
 import qualified Options.Applicative as O
 import qualified Text.Taggy.Lens as X
+--
+import           NLP.SyntaxTree.Type.PropBank
 
 
-data Role = Role { _descr :: Text
-                 , _roleF :: Text
-                 , _roleN :: Text }
-          deriving Show
-
-makeLenses ''Role
-
-emptyRole = Role "" "" ""
 
 data Config = Config { framefile :: FilePath }
 
@@ -42,9 +37,9 @@ main = do
         let rolesetid = roleset ^. X.attrs . ix "id"
             roles = roleset ^?! X.allNamed (only "roles")   -- roles should exist uniquely
             roles' = flip map (roles ^.. X.allNamed (only "role") . X.attrs) $ \r ->
-                       emptyRole &~ do descr .= (r ^. ix "descr")
-                                       roleF .= (r ^. ix "f")
-                                       roleN .= (r ^. ix "n")
+                       emptyRole &~ do description .= (r ^. ix "descr")
+                                       function    .= identifyFuncTag (r ^. ix "f")
+                                       number      .= read (T.unpack (r ^. ix "n"))
         print (rolesetid,roles')
 
 
