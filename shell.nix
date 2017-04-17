@@ -9,6 +9,7 @@ let hsconfig = import (uphere-nix-overlay + "/nix/haskell-modules/configuration-
                  { inherit pkgs; };
     hsconfig2  = self: super: {
       "symbolic" = self.callPackage (import symbolic) {};
+      hexpat-lens = haskell.lib.doJailbreak super.hexpat-lens;
     };
     newhaskellPackages = haskellPackages.override {
       overrides = self: super: hsconfig self super // hsconfig2 self super;
@@ -18,14 +19,17 @@ let hsconfig = import (uphere-nix-overlay + "/nix/haskell-modules/configuration-
               cabal-install
               xml-conduit split unordered-containers vector-algorithms storable-tuple
               tagged either
+              containers
+              hblas
+              #hexpat-lens
+              lbfgs
+              language-c 
+              MemoTrie lens
               mersenne-random
               math-functions
-              hblas
-              lbfgs
-              MemoTrie lens
-              language-c containers
 	      llvm-general
 	      QuickCheck
+              taggy-lens
 	      tasty
 	      tasty-golden
 	      tasty-hunit
