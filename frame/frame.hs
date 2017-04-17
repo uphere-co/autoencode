@@ -2,20 +2,20 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-import           Control.Lens
-import           Data.Binary               (encode,decode)
+import           Control.Lens                     ((^.),(^..),(^?),(^?!),(&~),(.=),ix,only)
+import           Data.Binary                      (encode,decode)
 import qualified Data.ByteString.Lazy.Char8 as BL
-import           Data.List                 (sort)
-import           Data.Monoid
-import           Data.Text                 (Text)
+import           Data.List                        (sort)
+import           Data.Monoid                      ((<>))
+import           Data.Text                        (Text)
 import qualified Data.Text         as T
 import qualified Data.Text.IO      as TIO
 import qualified Data.Text.Lazy    as TL
 import qualified Data.Text.Lazy.IO as TLIO
 import qualified Options.Applicative as O
-import           System.Directory
-import           System.FilePath
-import           System.IO
+import           System.Directory                 (getDirectoryContents)
+import           System.FilePath                  ((</>),takeExtension)
+import           System.IO                        (Handle,IOMode(..),hPutStr,withFile)
 import qualified Text.Taggy.Lens as X
 --
 import           NLP.SyntaxTree.Type.PropBank
