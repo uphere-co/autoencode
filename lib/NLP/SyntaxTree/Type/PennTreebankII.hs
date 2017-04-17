@@ -50,6 +50,8 @@ data POSTag = CC          -- ^ conjunction, coordinating
             | M_COMMA     -- ^ punctuation mark, comma           (original ,)
             | M_COLON     -- ^ punctuation mark, colon           (original :)
             | M_DQUOTE    -- ^ double quotation mark             (original '')
+            | M_DBACKQUOTE -- ^ double back quotation mark       (original ``)
+            | M_DOLLAR    -- ^ dollar sign                       (original $) 
             | D_LRB       -- ^ left parenthesis                  (original -LRB-)
             | D_RRB       -- ^ right parentheis                  (original -RRB-)
             | D_NONE      -- ^ none                              (original -NONE-)
@@ -152,6 +154,8 @@ identifyPOS t
           | p == ","    -> M_COMMA 
           | p == ":"    -> M_COLON 
           | p == "''"   -> M_DQUOTE
+          | p == "``"   -> M_DBACKQUOTE
+          | p == "$"    -> M_DOLLAR
           | otherwise   -> error ("invalid tag: " ++ T.unpack t)
 
 identifyChunk :: Text -> ChunkTag
@@ -181,4 +185,9 @@ identifyChunk t =
           | p == "X"    -> X    
           | p == "S"    -> S
           | p == "SBAR" -> SBAR
+          | p == "SBARQ" -> SBARQ
+          | p == "SINV" -> SINV
+          | p == "SQ"   -> SQ
           | otherwise   -> error ("no such chunk tag : " ++ T.unpack t)
+
+
