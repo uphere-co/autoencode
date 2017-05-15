@@ -1,11 +1,15 @@
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module NLP.SyntaxTree.Type.PennTreebankII where
 
-import Data.Text                (Text)
+import           Data.Aeson
+import           Data.Aeson.Types
+import           Data.Text      (Text)
 import qualified Data.Text as T  
+import           GHC.Generics
 
 -- based on http://www.clips.ua.ac.be/pages/mbsp-tags
 -- also http://www.surdeanu.info/mihai/teaching/ista555-fall13/readings/PennTreebankConstituents.html
@@ -55,7 +59,7 @@ data POSTag = CC          -- ^ conjunction, coordinating
             | D_LRB       -- ^ left parenthesis                  (original -LRB-)
             | D_RRB       -- ^ right parentheis                  (original -RRB-)
             | D_NONE      -- ^ none                              (original -NONE-)
-            deriving (Show, Eq, Ord, Enum)
+            deriving (Generic, Show, Eq, Ord, Enum)
 
 data ChunkTag = NP        -- ^ noun phrase
               | PP        -- ^ prepositional phrase
@@ -84,12 +88,12 @@ data ChunkTag = NP        -- ^ noun phrase
               | SBARQ     -- ^ direct question introduced by a wh-word or wh-phrase
               | SINV      -- ^ inverted declarative sentence
               | SQ        -- ^ inverted yes/no question
-              deriving (Show,Eq,Ord,Enum)
+              deriving (Generic, Show,Eq,Ord,Enum)
 
 data IOBPrefix = I_       -- ^ inside the chunk 
                | B_       -- ^ inside the chunk, preceding word is part of a different chunk
                | O_       -- ^ not part of a chunk
-               deriving (Show,Eq,Ord,Enum) 
+               deriving (Generic, Show,Eq,Ord,Enum) 
 
 data RelationTag = R_SBJ  -- ^ sentence subject
                  | R_OBJ  -- ^ sentence object
@@ -100,11 +104,11 @@ data RelationTag = R_SBJ  -- ^ sentence subject
                  | R_DIR  -- ^ direction
                  | R_EXT  -- ^ extent 
                  | R_PRP  -- ^ purpose
-                 deriving (Show,Eq,Ord,Enum)
+                 deriving (Generic, Show,Eq,Ord,Enum)
 
 data AnchorTag = A1       -- ^ anchor chunks that corresponds to P1
                | P1       -- ^ PNP that corresponds to A1
-               deriving (Show,Eq,Ord,Enum)
+               deriving (Generic, Show,Eq,Ord,Enum)
 
 
 identifyPOS :: Text -> POSTag
@@ -189,5 +193,39 @@ identifyChunk t =
           | p == "SINV" -> SINV
           | p == "SQ"   -> SQ
           | otherwise   -> error ("no such chunk tag : " ++ T.unpack t)
+
+
+instance FromJSON POSTag where
+  parseJSON = genericParseJSON defaultOptions
+
+instance ToJSON POSTag where
+  toJSON = genericToJSON defaultOptions
+
+instance FromJSON ChunkTag where
+  parseJSON = genericParseJSON defaultOptions
+
+instance ToJSON ChunkTag where
+  toJSON = genericToJSON defaultOptions
+
+instance FromJSON IOBPrefix where
+  parseJSON = genericParseJSON defaultOptions
+
+instance ToJSON IOBPrefix where
+  toJSON = genericToJSON defaultOptions
+
+instance FromJSON RelationTag where
+  parseJSON = genericParseJSON defaultOptions
+
+instance ToJSON RelationTag where
+  toJSON = genericToJSON defaultOptions
+
+instance FromJSON AnchorTag where
+  parseJSON = genericParseJSON defaultOptions
+
+instance ToJSON AnchorTag where
+  toJSON = genericToJSON defaultOptions
+
+
+
 
 

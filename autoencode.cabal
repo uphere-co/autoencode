@@ -34,6 +34,7 @@ Library
   hs-source-dirs:       lib
   Build-depends:        base,
                         --
+                        aeson,
                         attoparsec,
                         bifunctors,
                         binary,
