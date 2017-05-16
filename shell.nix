@@ -1,4 +1,5 @@
 { pkgs ? (import <nixpkgs>{})
+, nlp-types
 , uphere-nix-overlay
 , symbolic
 }:
@@ -9,6 +10,7 @@ let hsconfig = import (uphere-nix-overlay + "/nix/haskell-modules/configuration-
                  { inherit pkgs; };
     hsconfig2  = self: super: {
       "symbolic" = self.callPackage (import symbolic) {};
+      "nlp-types" = self.callPackage (import nlp-types) {};
       hexpat-lens = haskell.lib.doJailbreak super.hexpat-lens;
     };
     newhaskellPackages = haskellPackages.override {
@@ -27,15 +29,16 @@ let hsconfig = import (uphere-nix-overlay + "/nix/haskell-modules/configuration-
               MemoTrie lens
               mersenne-random
               math-functions
-	      llvm-general
-	      QuickCheck
+	          llvm-general
+	          QuickCheck
               taggy-lens
-	      tasty
-	      tasty-golden
-	      tasty-hunit
-	      tasty-quickcheck
-	      tasty-smallcheck
+	          tasty
+	          tasty-golden
+	          tasty-hunit
+	          tasty-quickcheck
+	          tasty-smallcheck
               zenc
+              p.nlp-types
               p.symbolic
             ]);
 
