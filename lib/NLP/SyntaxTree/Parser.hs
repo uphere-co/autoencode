@@ -7,7 +7,8 @@ import           Control.Applicative
 import qualified Data.Attoparsec.Text as A
 --
 import           NLP.SyntaxTree.Type
-import           NLP.SyntaxTree.Type.PennTreebankII
+--
+import           NLP.Type.PennTreebankII
 --
 import Debug.Trace
 
