@@ -26,10 +26,6 @@ source-repository HEAD
   branch:               master
   tag:                  0.0
 
---
--- Test harness
---
-
 Library
   hs-source-dirs:       lib
   Build-depends:        base,
@@ -52,6 +48,7 @@ Library
                         transformers,
                         unordered-containers,
                         symbolic,
+                        nlp-types,
                         vector
                         
 
@@ -105,6 +102,7 @@ Executable autoencode
                         llvm-general,
                         MemoTrie,
                         symbolic,
+                        nlp-types,
                         text,
                         transformers,
                         unordered-containers,

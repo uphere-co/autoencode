@@ -13,8 +13,9 @@ import qualified Options.Applicative  as O
 import           Text.Printf
 --
 import NLP.SyntaxTree.Type
-import NLP.SyntaxTree.Type.PennTreebankII
 import NLP.SyntaxTree.Parser
+--
+import NLP.Type.PennTreebankII
 --
 import Debug.Trace
 
